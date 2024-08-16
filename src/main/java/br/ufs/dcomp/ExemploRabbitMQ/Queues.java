@@ -4,9 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class Emissor {
-
-  private final static String QUEUE_NAME = "minha-fila";
+public class Queues {
 
   public static void main(String[] argv) throws Exception {
     ConnectionFactory factory = new ConnectionFactory();
@@ -15,15 +13,12 @@ public class Emissor {
     factory.setPassword("password"); // Alterar
     factory.setVirtualHost("/");    Connection connection = factory.newConnection();
     Channel channel = connection.createChannel();
-
-                      //(queue-name, durable, exclusive, auto-delete, params); 
-    channel.queueDeclare(QUEUE_NAME, false,   false,     false,       null);
-
-    String message = "Olá!!!";
     
-                    //  (exchange, routingKey, props, message-body             ); 
-    channel.basicPublish("",       QUEUE_NAME, null,  message.getBytes("UTF-8"));
-    System.out.println(" [x] Mensagem enviada: '" + message + "'");
+    
+    for(int i = 1; i <= 10; i++){
+      channel.queueDeclare("Fila " + (i > 9 ? i : "0"+i), false,   false,     false,       null);
+      
+    }
 
     channel.close();
     connection.close();
